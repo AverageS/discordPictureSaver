@@ -20,7 +20,6 @@ class picSaver(discord.Client):
     def sendPicture(self, pic_name):
         try:
             t = ftplib.FTP('192.168.1.231')
-            t.login(user='yobabot', passwd='sic3k7u6')
             t.cwd('/yobabot')
             t.storbinary('STOR ' + pic_name, open(pic_name, 'rb'))
         except:
