@@ -57,11 +57,13 @@ class picSaver(discord.Client):
     def on_message(self, message):
         with open('messages', 'w') as fp:
             fp.write(''.join([message.timestamp, message.clean_content]))
+            logging.info('message saved')
         self.checkAndSafe(message)
 
     def on_message_edit(self, before, after):
         with open('edited_messages', 'w') as fp:
             fp.write(''.join([after.edited_timestamp, after.clean_content]))
+            logging.info('edited message saved')
         self.checkAndSafe(after)
 
 if __name__ == '__main__':
