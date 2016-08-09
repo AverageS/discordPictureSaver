@@ -5,7 +5,7 @@ import os
 from urllib import request
 
 
-TOKEN = open('token', 'r').readline()
+TOKEN = open('token', 'r').readline().replace('/n', '')
 
 FORMATS = ['jpg', 'bmp', 'png', 'gif', 'tiff']
 
@@ -23,6 +23,7 @@ class picSaver(discord.Client):
             t.login(user='yobabot', passwd='sic3k7u6')
             t.cwd('/yobabot')
             t.storbinary('STOR ' + pic_name, open(pic_name, 'rb'))
+            logging.info('Picture saved' + pic_name)
         except:
             logging.error('Could not send pic ' + pic_name)
 
@@ -54,10 +55,14 @@ class picSaver(discord.Client):
                         except:
                             logging.error('Could not remove file' + filename)
 
-    async def on_message(self, message):
+    def on_message(self, message):
+        with open('messages', 'w') as fp:
+            fp.write(''.join([message.timestamp, message.clean_content]))
         self.checkAndSafe(message)
 
     def on_message_edit(self, before, after):
+        with open('edited_messages', 'w') as fp:
+            fp.write(''.join([after.edited_timestamp, after.clean_content]))
         self.checkAndSafe(after)
 
 if __name__ == '__main__':
