@@ -5,7 +5,7 @@ import os
 from urllib import request
 
 
-TOKEN = open('token', 'r').readline().replace('/n', '')
+TOKEN = open('token', 'r').readline().replace('\n', '')
 
 FORMATS = ['jpg', 'bmp', 'png', 'gif', 'tiff']
 
@@ -31,7 +31,7 @@ class picSaver(discord.Client):
             return
         pic_saver_mentions = [t for t in message.mentions if t.name == 'pictureSaver']
         if pic_saver_mentions != [] and 'stop' in message.clean_content:
-            #self.forbidden_channels.append(message.channel)
+            self.forbidden_channels.append(message.channel)
             return
         if message.embeds is not None:
             for emb in message.embeds:
@@ -56,13 +56,17 @@ class picSaver(discord.Client):
 
     def on_message(self, message):
         with open('messages', 'w') as fp:
-            fp.write(''.join([message.timestamp, message.clean_content]))
+            author = message.author.display_name
+            discrim = message.author.discriminator
+            fp.write(''.join([author, '#',discrim,str(message.timestamp), message.clean_content]))
             logging.info('message saved')
         self.checkAndSafe(message)
 
     def on_message_edit(self, before, after):
         with open('edited_messages', 'w') as fp:
-            fp.write(''.join([after.edited_timestamp, after.clean_content]))
+            author = after.author.display_name
+            discrim = after.author.discriminator
+            fp.write(''.join([author, '#',discrim, str(after.edited_timestamp), after.clean_content]))
             logging.info('edited message saved')
         self.checkAndSafe(after)
 
