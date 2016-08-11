@@ -17,6 +17,17 @@ class picSaver(discord.Client):
     def run(self):
         super().run(TOKEN, bot=True)
 
+    def writeText(self, message):
+        if os.stat('messages').st_size > 10**4:
+            self.sendPicture('messages')
+            os.remove('messages')
+        with open('messages', 'a') as fp:
+            author = message.author.display_name
+            discrim = message.author.discriminator
+            fp.write(''.join([str(message.timestamp), ':',author, '#', discrim, message.clean_content]))
+            logging.info('message saved')
+
+
     def sendPicture(self, pic_name):
         try:
             t = ftplib.FTP('192.168.1.231')
@@ -55,19 +66,11 @@ class picSaver(discord.Client):
                             logging.error('Could not remove file' + filename)
 
     def on_message(self, message):
-        with open('messages', 'w') as fp:
-            author = message.author.display_name
-            discrim = message.author.discriminator
-            fp.write(''.join([author, '#',discrim,str(message.timestamp), message.clean_content]))
-            logging.info('message saved')
+        self.writeText(message)
         self.checkAndSafe(message)
 
     def on_message_edit(self, before, after):
-        with open('edited_messages', 'w') as fp:
-            author = after.author.display_name
-            discrim = after.author.discriminator
-            fp.write(''.join([author, '#',discrim, str(after.edited_timestamp), after.clean_content]))
-            logging.info('edited message saved')
+        self.writeText(after)
         self.checkAndSafe(after)
 
 if __name__ == '__main__':
