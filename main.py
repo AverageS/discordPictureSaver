@@ -18,14 +18,14 @@ class picSaver(discord.Client):
         super().run(TOKEN, bot=True)
 
     def writeText(self, message):
-        if os.stat('messages').st_size > 10**4:
-            self.sendPicture('messages')
-            os.remove('messages')
         with open('messages', 'a') as fp:
             author = message.author.display_name
             discrim = message.author.discriminator
             fp.write(''.join([str(message.timestamp), ':',author, '#', discrim, message.clean_content]))
             logging.info('message saved')
+        if os.stat('messages').st_size > 10**4:
+            self.sendPicture('messages')
+            os.remove('messages')
 
 
     def sendPicture(self, pic_name):
