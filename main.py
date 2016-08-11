@@ -28,9 +28,10 @@ class picSaver(discord.Client):
             os.remove('messages')
 
 
+
     def sendPicture(self, pic_name):
         try:
-            t = ftplib.FTP('192.168.1.231')
+            t = ftplib.FTP_TLS('192.168.1.231', 'yobabot', open('FTP_password', 'r').readline().replace('/n',''))
             t.cwd('/yobabot')
             t.storbinary('STOR ' + pic_name, open(pic_name, 'rb'))
             logging.info('Picture saved' + pic_name)
